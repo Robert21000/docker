@@ -1,7 +1,5 @@
-create database bd_g8;
-use bd_g8;
-ALTER USER 'root' IDENTIFIED WITH mysql_native_password BY 'secret';
-flush privileges;
+
+
 create table Cliente(
 id_cliente int primary key auto_increment,
 nombre varchar(100) not null,
@@ -113,3 +111,5 @@ foreign key (id_propiedad) references Propiedad(id_propiedad)
 );
 
 
+ALTER USER 'root' IDENTIFIED WITH mysql_native_password BY 'secret';
+flush privileges;
