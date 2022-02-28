@@ -1,0 +1,20 @@
+version: "3.8"
+services:
+  db:
+    build: ./db
+    environment:
+      MYSQL_ROOT_PASSWORD: secret
+      MYSQL_DATABASE: bd_g8
+    restart: always
+  web:
+    build: ./web
+    environment:
+      MYSQL_DATABASE: bd_g8
+      MYSQL_USER: root
+      MYSQL_PASSWORD: secret
+      MYSQL_HOST: db
+    ports:
+      - "3000:3000"
+    depends_on:
+      - db
+    restart: on-failure
