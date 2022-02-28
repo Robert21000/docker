@@ -1,13 +1,13 @@
 version: "3.8"
 services:
   db:
-    build: ./db
+    build: ./bd
     environment:
       MYSQL_ROOT_PASSWORD: secret
       MYSQL_DATABASE: bd_g8
     restart: always
   web:
-    build: ./web
+    build: ./server
     environment:
       MYSQL_DATABASE: bd_g8
       MYSQL_USER: root
