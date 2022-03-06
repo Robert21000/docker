@@ -1,23 +1,22 @@
 {
-  "name": "web",
+  "name": "registro-api",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "Nodejs CRUD Restful Propiedades with MySQL Express",
+  "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node index.js"
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": [],
-  "author": "",
+  "keywords": [
+    "nodejs",
+    "express",
+    "mysql",
+    "restApi"
+  ],
+  "author": "Rodolfo",
   "license": "ISC",
   "dependencies": {
-    "body-parser": "^1.19.0",
     "cors": "^2.8.5",
-    "date-shortcode": "^1.0.0",
-    "express": "^4.17.1",
-    "express-fileupload": "^1.2.1",
-    "morgan": "^1.10.0",
-    "mysql": "^2.18.1",
-    "nodemailer": "^6.7.2"
+    "express": "^4.17.3",
+    "mysql": "^2.18.1"
   }
 }
