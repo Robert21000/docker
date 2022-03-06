@@ -32,17 +32,13 @@ const connection = mysql.createPool({
 });
 
 
-
-  app.get("/api/propiedades/anfitrion/:id",async (req, res)=> {
+  app.get("/api/cards/usuario/:id",async (req, res)=> {
 	let id=req.params.id;
-    const insert = connection.query('Select * from Propiedad where (id_anfitrion='+id+')',function (err, rows) {
+    const insert = connection.query('Select * from Tarjeta where (id_cliente='+id+')',function (err, rows) {
         if (err) throw err;
         res.json(rows);
       });
   });
-
-
-
 
   app.post("/api/cards/",async (req, res)=> {
 		let numero= req.body.numero;
@@ -56,6 +52,15 @@ const connection = mysql.createPool({
         if (err) throw err;	
 		res.json(rows);
 		
+      });
+  });
+  
+  app.delete("/api/cards/usuario/",async (req, res)=> {
+    let id_tarjeta=req.body.id_tarjeta;
+    let id_cliente=req.body.id_cliente
+    const insert = connection.query('Delete from Tarjeta where id_tarjeta='+id_tarjeta+' and id_cliente = '+id_cliente,function (err, rows) {
+        if (err) throw err;
+        res.json(rows);
       });
   });
   
