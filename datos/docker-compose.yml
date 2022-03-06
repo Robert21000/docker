@@ -18,3 +18,15 @@ services:
     depends_on:
       - db
     restart: on-failure
+  web2:
+    build: ./web2
+    environment:
+      MYSQL_DATABASE: test
+      MYSQL_USER: root
+      MYSQL_PASSWORD: password
+      MYSQL_HOST: db
+    ports:
+      - "5500:5500"
+    depends_on:
+      - db
+    restart: on-failure  
