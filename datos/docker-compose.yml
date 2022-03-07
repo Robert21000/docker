@@ -42,3 +42,15 @@ services:
     depends_on:
       - db
     restart: on-failure  
+  propiedad:
+    build: ./propiedad
+    environment:
+      MYSQL_DATABASE: test
+      MYSQL_USER: root
+      MYSQL_PASSWORD: password
+      MYSQL_HOST: db
+    ports:
+      - "3300:3300"
+    depends_on:
+      - db
+    restart: on-failure 
