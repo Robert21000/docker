@@ -33,7 +33,7 @@ const connection = mysql.createPool({
 //get all services
   app.get("/api/servicios/",async (req, res)=> {
 	//let id=req.params.id;
-    const insert = connection.query('Select * from servicio',function (err, rows) {
+    const insert = connection.query('Select * from Servicio',function (err, rows) {
         if (err) throw err;
         res.json(rows);
       });
@@ -42,7 +42,7 @@ const connection = mysql.createPool({
   //get all propertires
   app.get("/api/property/",async (req, res)=> {
 	//let id=req.params.id;
-    const insert = connection.query('Select * from propiedad',function (err, rows) {
+    const insert = connection.query('Select * from Propiedad',function (err, rows) {
         if (err) throw err;
         res.json(rows);
       });
@@ -51,7 +51,7 @@ const connection = mysql.createPool({
   //get properties by ID
   app.get("/api/propiedad/:id",async (req, res)=> {
     let id=req.params.id;
-      const insert = connection.query('Select * from propiedad where id_propiedad ='+id,function (err, rows) {
+      const insert = connection.query('Select * from Propiedad where id_propiedad ='+id,function (err, rows) {
           if (err) throw err;
           res.json(rows);
         });
@@ -60,7 +60,7 @@ const connection = mysql.createPool({
   //get properties by Anfritrion
   app.get("/api/propiedad/anfitrion/:id",async (req, res)=> {
     let id=req.params.id;
-      const insert = connection.query('Select * from propiedad where id_anfitrion ='+id,function (err, rows) {
+      const insert = connection.query('Select * from Propiedad where id_anfitrion ='+id,function (err, rows) {
           if (err) throw err;
           res.json(rows);
         });
@@ -68,7 +68,7 @@ const connection = mysql.createPool({
 
   //get properties by ponderacion desc
   app.get("/api/propiedad/",async (req, res)=> {
-      const insert = connection.query('Select * from propiedad order by ponderacion desc',function (err, rows) {
+      const insert = connection.query('Select * from Propiedad order by ponderacion desc',function (err, rows) {
           if (err) throw err;
           res.json(rows);
         });
@@ -88,7 +88,7 @@ const connection = mysql.createPool({
       const json = req.body.services;
       
 	 if(descripcion){
-      let consulta='Insert into propiedad(foto,valor,descripcion,capacidad,no_hab,no_camas,no_banios,id_anfitrion) values('
+      let consulta='Insert into Propiedad(foto,valor,descripcion,capacidad,no_hab,no_camas,no_banios,id_anfitrion) values('
       connection.query(consulta+'\''+foto+'\','+valor+',\''+descripcion+'\','+capacidad+','+noHabitacion+','+noCamas+','+noBanios+','+id_anfitrion+')',function (err, rows) {
         if (err) throw err;	        
       res.json({ message: `Property was created successfully!` });     
@@ -96,7 +96,7 @@ const connection = mysql.createPool({
       
       insertDetalle(json);
    }else{
-      let consulta='Insert into propiedad(foto,valor,no_hab,no_camas,no_banios,id_anfitrion) values('
+      let consulta='Insert into Propiedad(foto,valor,no_hab,no_camas,no_banios,id_anfitrion) values('
       connection.query(consulta+'\''+foto+'\','+valor+','+noHabitacion+','+noCamas+','+noBanios+','+id_anfitrion+')',function (err, rows) {
         if (err) throw err;	
       res.json({ message: `Property was created successfully!` });     
@@ -110,7 +110,7 @@ const connection = mysql.createPool({
   //insert detalle de servicios propiedades
   function insertDetalle(services){
       
-    const select = connection.query('SELECT MAX(id_propiedad) as maximo FROM propiedad;',function (err, rows) {
+    const select = connection.query('SELECT MAX(id_propiedad) as maximo FROM Propiedad;',function (err, rows) {
       if (err) throw err;
       const id = rows[0].maximo;
       //console.log(id);    
@@ -118,7 +118,7 @@ const connection = mysql.createPool({
       for (let i in services ){
         //console.log("ID: "+id);
         //console.log(services[i]);
-        let consulta='Insert into propiedad_servicios(id_propiedad, id_servicio) values('
+        let consulta='Insert into Propiedad_Servicios(id_propiedad, id_servicio) values('
         const insert = connection.query(consulta+id+','+services[i]+')',function (err, rows) {
           if (err) throw err;	
         else console.log("Detalle Ingresado");
@@ -143,7 +143,7 @@ const connection = mysql.createPool({
 
     const json = req.body.services;
 
-    const insert = connection.query('Update propiedad set foto=\''+foto+'\', valor='+valor+', descripcion=\''+descripcion+'\', capacidad='+capacidad+', no_hab='+noHabitacion+', no_camas='+noCamas+', no_banios='+noBanios+', id_anfitrion='+id_anfitrion+' where (id_propiedad='+id+')',function (err, rows) {
+    const insert = connection.query('Update Propiedad set foto=\''+foto+'\', valor='+valor+', descripcion=\''+descripcion+'\', capacidad='+capacidad+', no_hab='+noHabitacion+', no_camas='+noCamas+', no_banios='+noBanios+', id_anfitrion='+id_anfitrion+' where (id_propiedad='+id+')',function (err, rows) {
       if (err) throw err;
       res.json({ message: `Property was Updated successfully!` });
     });
@@ -155,7 +155,7 @@ const connection = mysql.createPool({
 //insert detalle de servicios propiedades
 function updateDetalle(services, id){
   console.log("Servicios: "+services + " " + id);
-  const select = connection.query('DELETE FROM propiedad_servicios WHERE id_propiedad='+id+' and id_servicio NOT IN ('+services+')',function (err, rows) {
+  const select = connection.query('DELETE FROM Propiedad_Servicios WHERE id_propiedad='+id+' and id_servicio NOT IN ('+services+')',function (err, rows) {
     if (err) {throw err}
     else{
       insertDetalle2(services,id);
@@ -168,11 +168,11 @@ function updateDetalle(services, id){
       for (let i in services ){
         //console.log("ID: "+id);
         //console.log(services[i]);        
-        const con2 = connection.query('Select * from propiedad_servicios where id_propiedad='+id+' and id_servicio='+services[i]+')',function (err, rows) {
+        const con2 = connection.query('Select * from Propiedad_Servicios where id_propiedad='+id+' and id_servicio='+services[i]+')',function (err, rows) {
           if (!rows){
             console.log("Servicio encontrado");
           }else {
-            let consulta='Insert into propiedad_servicios(id_propiedad, id_servicio) values('
+            let consulta='Insert into Propiedad_Servicios(id_propiedad, id_servicio) values('
             const insert = connection.query(consulta+id+','+services[i]+')',function (err, rows) {
               if (err) throw err;	
             else console.log("Detalle Update Ingresado");
@@ -191,7 +191,7 @@ function updateDetalle(services, id){
 //delete property
   app.delete("/api/propiedad/:id",async (req, res)=> {
     let id=req.params.id;
-    const insert = connection.query('Delete from propiedad where id_propiedad='+id,function (err, rows) {
+    const insert = connection.query('Delete from Propiedad where id_propiedad='+id,function (err, rows) {
         if (err) throw err;
         res.json({ message: `Property was Deleted successfully!` });
       });
