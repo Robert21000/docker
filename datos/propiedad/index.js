@@ -26,8 +26,8 @@ const connection = mysql.createPool({
 	connectionLimit: 10,
 	host: process.env.MYSQL_HOST || 'localhost',
 	user: process.env.MYSQL_USER || 'root',
-	password: process.env.MYSQL_PASSWORD || 'rodolfo240891',
-	database: process.env.MYSQL_DATABASE || 'clientes-api'
+	password: process.env.MYSQL_PASSWORD || '1234',
+	database: process.env.MYSQL_DATABASE || 'test'
 });
   
 //get all services
@@ -48,7 +48,7 @@ const connection = mysql.createPool({
       });
   });
   
-  //get properties by ID
+  //get properties by ID 
   app.get("/api/propiedad/:id",async (req, res)=> {
     let id=req.params.id;
       const insert = connection.query('Select * from Propiedad where id_propiedad ='+id,function (err, rows) {
@@ -57,11 +57,12 @@ const connection = mysql.createPool({
         });
     });
 
-  //get properties by Anfritrion
+  //get properties by ID Anfritrion
   app.get("/api/propiedad/anfitrion/:id",async (req, res)=> {
     let id=req.params.id;
       const insert = connection.query('Select * from Propiedad where id_anfitrion ='+id,function (err, rows) {
           if (err) throw err;
+          console.log(rows);
           res.json(rows);
         });
     });
@@ -77,6 +78,7 @@ const connection = mysql.createPool({
   //add property
   app.post("/api/propiedad/",async (req, res)=> {
       let foto = req.body.photo;
+      let titulo = req.body.title;
       let valor= req.body.value;
       let descripcion= req.body.description;
       let capacidad= req.body.capacity;
@@ -88,10 +90,10 @@ const connection = mysql.createPool({
       const json = req.body.services;
       
 	 if(descripcion){
-      let consulta='Insert into Propiedad(foto,valor,descripcion,capacidad,no_hab,no_camas,no_banios,id_anfitrion) values('
-      connection.query(consulta+'\''+foto+'\','+valor+',\''+descripcion+'\','+capacidad+','+noHabitacion+','+noCamas+','+noBanios+','+id_anfitrion+')',function (err, rows) {
+      let consulta='Insert into Propiedad(foto,titulo,valor,descripcion,capacidad,no_hab,no_camas,no_banios,id_anfitrion) values('
+      connection.query(consulta+'\''+foto+'\',\''+titulo+'\','+valor+',\''+descripcion+'\','+capacidad+','+noHabitacion+','+noCamas+','+noBanios+','+id_anfitrion+')',function (err, rows) {
         if (err) throw err;	        
-      res.json({ message: `Property was created successfully!` });     
+        res.json({ message: `Property was created successfully!` });     
       });
       
       insertDetalle(json);
@@ -133,6 +135,7 @@ const connection = mysql.createPool({
     let id=req.params.id;
 
     let foto = req.body.photo;
+    let titulo = req.body.title;
     let valor= req.body.value;
     let descripcion= req.body.description;
     let capacidad= req.body.capacity;
@@ -143,12 +146,11 @@ const connection = mysql.createPool({
 
     const json = req.body.services;
 
-    const insert = connection.query('Update Propiedad set foto=\''+foto+'\', valor='+valor+', descripcion=\''+descripcion+'\', capacidad='+capacidad+', no_hab='+noHabitacion+', no_camas='+noCamas+', no_banios='+noBanios+', id_anfitrion='+id_anfitrion+' where (id_propiedad='+id+')',function (err, rows) {
+    const insert = connection.query('Update Propiedad set foto=\''+foto+'\', titulo=\''+titulo+'\', valor='+valor+', descripcion=\''+descripcion+'\', capacidad='+capacidad+', no_hab='+noHabitacion+', no_camas='+noCamas+', no_banios='+noBanios+', id_anfitrion='+id_anfitrion+' where (id_propiedad='+id+')',function (err, rows) {
       if (err) throw err;
       res.json({ message: `Property was Updated successfully!` });
     });
     updateDetalle(json, id);
-    //console.log(insert);
  
 });
 
@@ -180,11 +182,6 @@ function updateDetalle(services, id){
           }
         });
         
-        //let consulta='Insert into propiedad_servicios(id_propiedad, id_servicio) values('
-        //const insert = connection.query(consulta+id+','+services[i]+')',function (err, rows) {
-        //  if (err) throw err;	
-        //else console.log("Detalle Ingresado");
-        //});
       }
   }
 
@@ -196,5 +193,23 @@ function updateDetalle(services, id){
         res.json({ message: `Property was Deleted successfully!` });
       });
   });
+
+  //get properties by id with services
+  app.get("/api/propiedad/servicios/:id",async (req, res)=> {
+    let id=req.params.id;
+
+    const insert = connection.query('Select * from Propiedad where id_propiedad='+id,function (err, rows) {
+        if (err) throw err;
+        let property = {...rows[0]};
+        const search = connection.query('Select id_servicio from Propiedad_Servicios where id_propiedad='+id,function (err, rows) {
+          if(err) throw err;          
+          //console.log(servicios);          
+          property.services = rows;
+          console.log(property);
+          res.json(property).status(200);
+        });        
+    });
+  });
+
 
 app.listen(3300, () => console.log('listining on port 3300'));
