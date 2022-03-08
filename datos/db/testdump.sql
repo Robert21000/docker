@@ -19,7 +19,7 @@ tipo varchar(100) not null,
 saldo double not null,
 
 id_cliente int not null,
-foreign key(id_cliente) references Cliente(id_cliente)
+foreign key(id_cliente) references Cliente(id_cliente) on delete cascade
 );
 
 create table Anfitrion(
@@ -28,7 +28,7 @@ nombre varchar(100) null,
 apellido varchar(100) null,
 tipo varchar(100) not null,
 empresa varchar(100) null,
-dpi int null,
+dpi varchar(100) null,
 correo varchar(200) not null,
 contrasenia varchar(50) not null,
 foto varchar(300) not null,
@@ -40,15 +40,17 @@ valoracion int not null
 
 create table Propiedad(
 id_propiedad int primary key auto_increment,
+titulo varchar(100),
 valor int not null,
 ponderacion double,
 descripcion varchar(500),
 no_hab int not null,
+capacidad int not null,
 no_camas int not null,
 no_banios int not null,
 
 id_anfitrion int not null,
-foreign key(id_anfitrion) references Anfitrion(id_anfitrion)
+foreign key(id_anfitrion) references Anfitrion(id_anfitrion) on delete cascade
 );
 
 create table Servicio(
@@ -58,13 +60,14 @@ descripcion varchar(500)
 );
 
 
+
 create table Propiedad_Servicio(
 id_prop_serv int primary key auto_increment,
 
 id_propiedad int not null,
 id_servicio int not null,
-foreign key(id_propiedad) references Propiedad(id_propiedad),
-foreign key(id_servicio) references Servicio(id_servicio)
+foreign key(id_propiedad) references Propiedad(id_propiedad) on delete cascade,
+foreign key(id_servicio) references Servicio(id_servicio) on delete cascade
 
 );
 
@@ -75,7 +78,7 @@ nombre varchar(100) not null,
 direccion varchar(300) not null,
 
 id_propiedad int not null,
-foreign key(id_propiedad) references Propiedad(id_propiedad)
+foreign key(id_propiedad) references Propiedad(id_propiedad) on delete cascade
 );
 
 
@@ -88,8 +91,8 @@ estado varchar(100) not null,
 
 id_cliente int not null,
 id_propiedad int not null,
-foreign key (id_cliente) references	Cliente(id_cliente),
-foreign key (id_propiedad) references Propiedad(id_propiedad)
+foreign key (id_cliente) references	Cliente(id_cliente) on delete cascade,
+foreign key (id_propiedad) references Propiedad(id_propiedad) on delete cascade
 );
 
 create table Resenia(
@@ -104,9 +107,13 @@ seguridad int not null,
 
 id_cliente int not null,
 id_propiedad int not null,
-foreign key (id_cliente) references	Cliente(id_cliente),
-foreign key (id_propiedad) references Propiedad(id_propiedad)
+foreign key (id_cliente) references	Cliente(id_cliente) on delete cascade,
+foreign key (id_propiedad) references Propiedad(id_propiedad) on delete cascade
 );
+
+insert into Anfitrion(nombre,apellido,tipo,empresa,dpi,correo,contrasenia,foto,direccion,estado,n_instancias,valoracion) values('','','particular','','12654','anfi1@gmail.com','7889','','','normal',25,5);
+
+insert into Propiedad(titulo,valor,ponderacion,descripcion,no_hab,capacidad,no_camas,no_banios,id_anfitrion) values('propiedad 1',100,5.5,'buena propiedad',5,10,3,2,1);
 
 ALTER USER 'root' IDENTIFIED WITH mysql_native_password BY 'password';
 

@@ -34,7 +34,7 @@ const connection = mysql.createPool({
 
 app.get("/api/reservacion/propiedad/:id",async (req, res)=> {
 	let id=req.params.id;
-    const insert = connection.query('Select * from Reservacion where (id_propiedad='+id+')',function (err, rows) {
+    const insert = connection.query('Select * from Reservacion as r join Cliente as c on r.id_cliente=c.id_cliente join Propiedad as p on r.id_propiedad=p.id_propiedad  where (r.id_propiedad='+id+')',function (err, rows) {
         if (err) throw err;
         res.json(rows);
       });

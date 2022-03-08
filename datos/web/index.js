@@ -9,6 +9,7 @@ var cors = require('cors')
 var morgan=require('morgan')
 var bodyParser = require('body-parser')
 
+var AWS = require('aws-sdk');
 
 app.use(express.static('files'));
 //app.use(bodyParser());
@@ -30,6 +31,38 @@ const connection = mysql.createPool({
 	password: process.env.MYSQL_PASSWORD || '1234',
 	database: process.env.MYSQL_DATABASE || 'test'
 });
+
+
+const s3 = new AWS.S3({
+	accessKeyId:'AKIA2TKFJE5IAKGCCUMT',
+	secretAccessKey:'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',
+	region:'us-east-1'
+
+});
+
+app.post('/api/upload',async (req,res) => {
+    let file = req.files['file']
+      
+        const params ={
+            Bucket:'s3aydg8',
+            Key:"usuario/"+file.name,
+            Body:file.data,
+            ContentType:"image"
+        }
+        
+
+        const putObjectpromise= s3.upload(params).promise();
+        putObjectpromise.then((result)=>{
+            console.log(result.Location)
+            res.json({url:result.Location})    
+        }).catch(error=>{
+            console.log(error,"error_promise");
+            res.json({dato:"result.Location"})
+        })
+      
+})
+
+
 
 app.get('/', (req, res) => {
 	connection.query('SELECT * FROM Cliente' , (err, rows) => {
@@ -154,7 +187,7 @@ app.get("/api/clientes",async (req, res)=> {
 					}else if(tipox=="anfitrion"){
 						let consulta='insert into Anfitrion(nombre,apellido,tipo,empresa,dpi,correo,contrasenia,foto,direccion,estado,n_instancias,valoracion) values '
 
-						connection.query(consulta+"(\'"+nombre+"\',\'"+apellido+"\',\'"+tipo+"\',\'"+empresa+"\',"+dpi+",\'"+correo+"\',\'"+pass+"\',\'"+foto+"\',\'"+direccion+"\',\'"+estado+"\',"+instancias+","+valoracion+")",function (err, result) {
+						connection.query(consulta+"(\'"+nombre+"\',\'"+apellido+"\',\'"+tipo+"\',\'"+empresa+"\',\'"+dpi+"\',\'"+correo+"\',\'"+pass+"\',\'"+foto+"\',\'"+direccion+"\',\'"+estado+"\',"+instancias+","+valoracion+")",function (err, result) {
 							if (err) throw err;
 							res.json({result:result});	
 						});		
@@ -183,7 +216,7 @@ app.get("/api/clientes",async (req, res)=> {
 
   app.get("/api/cliente/reservacion/:id",async (req, res)=> {
 	let id=req.params.id;
-    const insert = connection.query('Select * from Reservacion where (id_cliente='+id+')',function (err, rows) {
+    const insert = connection.query('Select * from Reservacion as r join Cliente as c on r.id_cliente=c.id_cliente join Propiedad as p on r.id_propiedad=p.id_propiedad  where (r.id_cliente='+id+')',function (err, rows) {
         if (err) throw err;
         res.json(rows);
       });

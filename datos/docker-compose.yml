@@ -6,6 +6,8 @@ services:
       MYSQL_ROOT_PASSWORD: password
       MYSQL_DATABASE: test
     restart: always
+    volumes:
+      - /home/ubuntu/data_test_db:/var/lib/mysql
   web:
     build: ./web
     environment:
